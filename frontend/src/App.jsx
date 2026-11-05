@@ -1,22 +1,23 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
-import Navbar from './components/Navbar'
-import Sidebar from './components/Sidebar'
-import Dashboard from './pages/Dashboard'
+
+import './App.css';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <Navbar />
+    <div className="app-layout">
       <Sidebar />
-      <Dashboard />
-    </>
-  )
+
+      <div className="main-content">
+        <Navbar />
+
+        <main className="dashboard-content">
+          <Dashboard />
+        </main>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;

@@ -1,9 +1,16 @@
-const SummaryCard = ({title,value, color}) => {
+
+const SummaryCard = ({ title, value, color }) => {
   return (
-    <div className="card" style={{backgroundColor:color || "red"}}>
-      <h3>{title}</h3>
-      <p>{value}</p>
-      
+    <div className="summary-card">
+      <div
+        className="summary-card-accent"
+        style={{ backgroundColor: color || "#4f46e5" }}
+      ></div>
+
+      <div className="summary-card-content">
+        <h3>{title}</h3>
+        <p>{value}</p>
+      </div>
     </div>
   );
 };
