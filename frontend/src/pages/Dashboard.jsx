@@ -9,30 +9,38 @@ const Dashboard = () => {
   const [designation, setDesignation] = useState("");
   const [search, setSearch] = useState("");
   const [editId, setEditId] = useState(null);
+  const [employees, setEmployees] = useState(() => {
+  const savedEmployees = localStorage.getItem("employees");
 
-  const [employees, setEmployees] = useState([
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      department: "IT",
-      designation: "Frontend Developer",
-      status: "Active"
-    },
-    {
-      id: 2,
-      name: "Priya Verma",
-      department: "HR",
-      designation: "HR Manager",
-      status: "Active"
-    },
-    {
-      id: 3,
-      name: "Aman Gupta",
-      department: "Finance",
-      designation: "Accountant",
-      status: "On Leave"
-    }
-  ]);
+  return savedEmployees
+    ? JSON.parse(savedEmployees)
+    : [
+        {
+          id: 1,
+          name: "Rahul Sharma",
+          department: "IT",
+          designation: "Frontend Developer",
+          status: "Active"
+        },
+        {
+          id: 2,
+          name: "Priya Verma",
+          department: "HR",
+          designation: "HR Manager",
+          status: "Active"
+        },
+        {
+          id: 3,
+          name: "Aman Gupta",
+          department: "Finance",
+          designation: "Accountant",
+          status: "On Leave"
+        }
+      ];
+});
+  useEffect(() => {
+    localStorage.setItem("employees", JSON.stringify(employees));
+  }, [employees]);
 
   const handleAddEmployee = () => {
     if (!name.trim() || !department.trim() || !designation.trim()) {
