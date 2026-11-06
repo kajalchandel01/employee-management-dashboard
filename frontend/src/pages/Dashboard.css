@@ -277,4 +277,55 @@
   font-size: 28px;
   font-weight: 700;
 }
+.status-select {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
 
+.status-select.status-active {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.status-select.status-leave {
+  color: #b45309;
+  background: #fef3c7;
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}

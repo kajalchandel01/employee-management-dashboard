@@ -1,13 +1,16 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SummaryCard from "../components/SummaryCard";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); 
   const [department, setDepartment] = useState("");
   const [designation, setDesignation] = useState("");
   const [search, setSearch] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const employeesPerPage = 5;
   const [editId, setEditId] = useState(null);
   const [employees, setEmployees] = useState(() => {
   const savedEmployees = localStorage.getItem("employees");
@@ -41,6 +44,10 @@ const Dashboard = () => {
   useEffect(() => {
     localStorage.setItem("employees", JSON.stringify(employees));
   }, [employees]);
+  
+  useEffect(() => {
+  setCurrentPage(1);  
+  }, [search, selectedDepartment]);
 
   const handleAddEmployee = () => {
     if (!name.trim() || !department.trim() || !designation.trim()) {
@@ -106,10 +113,40 @@ const Dashboard = () => {
       handleCancelEdit();
     }
   };
+  const handleStatusChange = (id, newStatus) => {
+   setEmployees((prevEmployees) =>
+    prevEmployees.map((employee) =>
+      employee.id === id
+        ? {
+            ...employee,
+            status: newStatus
+          }
+        : employee
+    )
+  );
+};
 
-  const filteredEmployees = employees.filter((employee) =>
+ const filteredEmployees = employees.filter((employee) => {
+  const matchesSearch =
     employee.name.toLowerCase().includes(search.toLowerCase()) ||
-    employee.department.toLowerCase().includes(search.toLowerCase())
+    employee.department.toLowerCase().includes(search.toLowerCase());
+
+  const matchesDepartment =
+    selectedDepartment === "All" ||
+    employee.department === selectedDepartment;
+
+  return matchesSearch && matchesDepartment;
+});
+  const totalPages = Math.ceil(
+    filteredEmployees.length / employeesPerPage
+  );
+
+  const startIndex = (currentPage - 1) * employeesPerPage;
+  const endIndex = startIndex + employeesPerPage;
+
+  const currentEmployees = filteredEmployees.slice(
+    startIndex,
+    endIndex
   );
 
   return (
@@ -218,6 +255,27 @@ const Dashboard = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+         <select className="search-input"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}>
+                <option value="All">All Departments</option>
+                {[...new Set(employees.map((employee) => employee.department))].map(
+                  (dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  )
+                )}
+          </select>
+          <button
+              className="cancel-btn"
+              onClick={() => {
+                setSearch("");
+                setSelectedDepartment("All");
+              }}
+            >
+              Clear Filters
+            </button>
         </div>
 
         <div className="table-wrapper">
@@ -234,19 +292,20 @@ const Dashboard = () => {
 
             <tbody>
               {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((employee) => (
+                currentEmployees.map((employee) => (
                   <tr key={employee.id}>
                     <td className="employee-name">{employee.name}</td>
                     <td>{employee.department}</td>
                     <td>{employee.designation}</td>
                     <td>
-                      <span
-                        className={`status-badge ${
-                          employee.status === "Active" ? "status-active" : "status-leave"
-                        }`}
-                      >
-                        {employee.status}
-                      </span>
+                     <select className={`status-select ${ employee.status === "Active" ? "status-active" : "status-leave"}`}
+                        value={employee.status}
+                        onChange={(e) =>
+                          handleStatusChange(employee.id, e.target.value)
+                        }>
+                      <option value="Active">Active</option>
+                      <option value="On Leave">On Leave</option>
+                    </select>
                     </td>
                     <td>
                       <div className="table-actions">
@@ -277,8 +336,22 @@ const Dashboard = () => {
             </tbody>
           </table>
         </div>
+        <div className="pagination">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages || totalPages === 0}
+            onClick={() => setCurrentPage((prev) => prev + 1)}>
+            Next
+          </button>
+        </div>
       </section>
-
     </div>
   );
 };
