@@ -1,4 +1,7 @@
 
+import EmployeeForm from "../components/EmployeeForm";
+import EmployeeTable from "../components/EmployeeTable";
+import SearchFilter from "../components/SearchFilter";
 import { useState, useEffect } from "react";
 import SummaryCard from "../components/SummaryCard";
 import "./Dashboard.css";
@@ -12,6 +15,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const employeesPerPage = 5;
   const [editId, setEditId] = useState(null);
+  const [email, setEmail] = useState("");
   const [employees, setEmployees] = useState(() => {
   const savedEmployees = localStorage.getItem("employees");
 
@@ -50,7 +54,7 @@ const Dashboard = () => {
   }, [search, selectedDepartment]);
 
   const handleAddEmployee = () => {
-    if (!name.trim() || !department.trim() || !designation.trim()) {
+    if (!name.trim() || !email.trim()|| !department.trim() || !designation.trim()) {
       alert("Please fill all fields");
       return;
     }
@@ -62,6 +66,7 @@ const Dashboard = () => {
             ? {
                 ...employee,
                 name: name.trim(),
+                email: email.trim(),
                 department: department.trim(),
                 designation: designation.trim()
               }
@@ -74,6 +79,7 @@ const Dashboard = () => {
       const newEmployee = {
         id: Date.now(),
         name: name.trim(),
+        email: email.trim(),
         department: department.trim(),
         designation: designation.trim(),
         status: "Active"
@@ -86,6 +92,7 @@ const Dashboard = () => {
     }
 
     setName("");
+    setEmail("");
     setDepartment("");
     setDesignation("");
   };
@@ -93,6 +100,7 @@ const Dashboard = () => {
   const handleEditEmployee = (employee) => {
     setEditId(employee.id);
     setName(employee.name);
+      setEmail(employee.email || "");
     setDepartment(employee.department);
     setDesignation(employee.designation);
   };
@@ -100,6 +108,7 @@ const Dashboard = () => {
   const handleCancelEdit = () => {
     setEditId(null);
     setName("");
+     setEmail("");
     setDepartment("");
     setDesignation("");
   };
@@ -187,58 +196,19 @@ const Dashboard = () => {
       </div>
 
       {/* Add / Edit Employee */}
-      <section className="employee-form-section">
-        <div className="section-heading">
-          <h2>
-            {editId !== null ? "Edit Employee" : "Add New Employee"}
-          </h2>
-          <p>Enter employee details below.</p>
-        </div>
-
-        <div className="employee-form">
-          <div className="form-group">
-            <label>Employee Name</label>
-            <input
-              type="text"
-              placeholder="Enter employee name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Department</label>
-            <input
-              type="text"
-              placeholder="Enter department"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Designation</label>
-            <input
-              type="text"
-              placeholder="Enter designation"
-              value={designation}
-              onChange={(e) => setDesignation(e.target.value)}
-            />
-          </div>
-
-          <div className="form-actions">
-            <button className="primary-btn" onClick={handleAddEmployee}>
-              {editId !== null ? "Update Employee" : "+ Add Employee"}
-            </button>
-
-            {editId !== null && (
-              <button className="cancel-btn" onClick={handleCancelEdit}>
-                Cancel
-              </button>
-            )}
-          </div>
-        </div>
-      </section>
+    <EmployeeForm
+  name={name}
+  setName={setName}
+  email={email}
+  setEmail={setEmail}
+  department={department}
+  setDepartment={setDepartment}
+  designation={designation}
+  setDesignation={setDesignation}
+  handleAddEmployee={handleAddEmployee}
+  editId={editId}
+  handleCancelEdit={handleCancelEdit}
+/>
 
       {/* Employee List */}
       <section className="employee-list-section">
@@ -247,95 +217,22 @@ const Dashboard = () => {
             <h2>Employee Directory</h2>
             <p>View and manage all employees.</p>
           </div>
-
-          <input
-            className="search-input"
-            type="text"
-            placeholder="Search by name or department..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-         <select className="search-input"
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}>
-                <option value="All">All Departments</option>
-                {[...new Set(employees.map((employee) => employee.department))].map(
-                  (dept) => (
-                    <option key={dept} value={dept}>
-                      {dept}
-                    </option>
-                  )
-                )}
-          </select>
-          <button
-              className="cancel-btn"
-              onClick={() => {
-                setSearch("");
-                setSelectedDepartment("All");
-              }}
-            >
-              Clear Filters
-            </button>
+            <SearchFilter
+              search={search}
+              setSearch={setSearch}
+              selectedDepartment={selectedDepartment}
+              setSelectedDepartment={setSelectedDepartment}
+              employees={employees}
+              setCurrentPage={setCurrentPage}
+            />
         </div>
 
-        <div className="table-wrapper">
-          <table className="employee-table">
-            <thead>
-              <tr>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Designation</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredEmployees.length > 0 ? (
-                currentEmployees.map((employee) => (
-                  <tr key={employee.id}>
-                    <td className="employee-name">{employee.name}</td>
-                    <td>{employee.department}</td>
-                    <td>{employee.designation}</td>
-                    <td>
-                     <select className={`status-select ${ employee.status === "Active" ? "status-active" : "status-leave"}`}
-                        value={employee.status}
-                        onChange={(e) =>
-                          handleStatusChange(employee.id, e.target.value)
-                        }>
-                      <option value="Active">Active</option>
-                      <option value="On Leave">On Leave</option>
-                    </select>
-                    </td>
-                    <td>
-                      <div className="table-actions">
-                        <button
-                          className="edit-btn"
-                          onClick={() => handleEditEmployee(employee)}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          className="delete-btn"
-                          onClick={() => handleDeleteEmployee(employee.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="empty-message">
-                    No employees found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <EmployeeTable
+          employees={currentEmployees}
+          handleEditEmployee={handleEditEmployee}
+          handleDeleteEmployee={handleDeleteEmployee}
+          handleStatusChange={handleStatusChange}
+        />
         <div className="pagination">
           <button
             disabled={currentPage === 1}

@@ -329,3 +329,122 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+/* Search and Filter Layout */
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.search-filter input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.search-filter select {
+  width: 180px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+}
+
+.search-filter button {
+  white-space: nowrap;
+}
+
+/* Employee Directory Heading */
+.employee-list-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Table */
+.employee-table .status-select {
+  min-width: 115px;
+  display: inline-block;
+}
+
+.employee-table .table-actions {
+  display: flex; 
+  align-items: center;
+  gap: 10px;
+}
+
+.employee-table .table-actions button {
+  display: inline-block;
+  min-width: 55px;
+}
+
+/* Status Dropdown */
+.status-select {
+  min-width: 115px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Action Buttons */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-actions button {
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+/* Table Scroll */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .employee-list-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-filter .search-input {
+  width: 220px;
+  max-width: 100%;
+}
+
+.search-filter .clear-filter-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 650px) {
+  .search-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filter .search-input,
+  .search-filter .clear-filter-btn {
+    width: 100%;
+  }
+}
